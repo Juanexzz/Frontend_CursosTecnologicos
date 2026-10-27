@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg-dl" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b0764"/>
+      <stop offset="60%" stop-color="#581c87"/>
+      <stop offset="100%" stop-color="#7e22ce"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#bg-dl)"/>
+  <!-- Stylized AI Brain / Network -->
+  <path d="M400 130 C460 130 500 170 500 220 C500 250 490 270 470 290 C450 310 430 330 400 350 C370 330 350 310 330 290 C310 270 300 250 300 220 C300 170 340 130 400 130 Z" fill="none" stroke="#e9d5ff" stroke-width="4" stroke-dasharray="8 6"/>
+  <!-- Central Glowing AI Core -->
+  <circle cx="400" cy="230" r="45" fill="#a855f7" stroke="#ffffff" stroke-width="3"/>
+  <!-- Attention Matrix / Vectors -->
+  <line x1="330" y1="180" x2="400" y2="230" stroke="#f472b6" stroke-width="3"/>
+  <line x1="470" y1="180" x2="400" y2="230" stroke="#f472b6" stroke-width="3"/>
+  <line x1="340" y1="280" x2="400" y2="230" stroke="#f472b6" stroke-width="3"/>
+  <line x1="460" y1="280" x2="400" y2="230" stroke="#f472b6" stroke-width="3"/>
+  <circle cx="330" cy="180" r="10" fill="#f472b6"/>
+  <circle cx="470" cy="180" r="10" fill="#f472b6"/>
+  <circle cx="340" cy="280" r="10" fill="#f472b6"/>
+  <circle cx="460" cy="280" r="10" fill="#f472b6"/>
+  <!-- Sparks / Synapses -->
+  <circle cx="400" cy="230" r="18" fill="#ffffff"/>
+  <text x="400" y="236" fill="#7e22ce" font-family="system-ui, sans-serif" font-weight="900" font-size="16" text-anchor="middle">LLM</text>
+</svg>

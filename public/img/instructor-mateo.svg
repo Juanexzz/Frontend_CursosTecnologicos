@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg-mateo" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="58" fill="url(#bg-mateo)" stroke="#6ee7b7" stroke-width="3"/>
+  <!-- Head -->
+  <circle cx="60" cy="46" r="22" fill="#fed7aa"/>
+  <!-- Modern hair & beard -->
+  <path d="M38 40 C42 22, 78 22, 82 40 C76 34, 44 34, 38 40 Z" fill="#451a03"/>
+  <path d="M46 54 C46 68, 74 68, 74 54 C68 62, 52 62, 46 54 Z" fill="#451a03"/>
+  <!-- Eyes & Smile -->
+  <circle cx="52" cy="46" r="2.5" fill="#1e293b"/>
+  <circle cx="68" cy="46" r="2.5" fill="#1e293b"/>
+  <!-- Headphones on neck -->
+  <path d="M40 76 C40 84, 80 84, 80 76" fill="none" stroke="#0284c7" stroke-width="4" stroke-linecap="round"/>
+  <!-- Torso / Hoodie -->
+  <path d="M26 104 C28 78, 92 78, 94 104 Z" fill="#0f172a"/>
+  <circle cx="60" cy="88" r="8" fill="#0284c7"/>
+</svg>

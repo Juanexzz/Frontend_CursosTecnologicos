@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg-ml" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#14532d"/>
+      <stop offset="60%" stop-color="#064e3b"/>
+      <stop offset="100%" stop-color="#022c22"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#bg-ml)"/>
+  <!-- Neural network nodes & connections -->
+  <!-- Layer 1 -->
+  <line x1="260" y1="140" x2="400" y2="170" stroke="#34d399" stroke-width="2" stroke-opacity="0.5"/>
+  <line x1="260" y1="140" x2="400" y2="240" stroke="#34d399" stroke-width="2" stroke-opacity="0.5"/>
+  <line x1="260" y1="230" x2="400" y2="170" stroke="#34d399" stroke-width="2" stroke-opacity="0.5"/>
+  <line x1="260" y1="230" x2="400" y2="240" stroke="#34d399" stroke-width="2" stroke-opacity="0.5"/>
+  <line x1="260" y1="320" x2="400" y2="240" stroke="#34d399" stroke-width="2" stroke-opacity="0.5"/>
+  <line x1="260" y1="320" x2="400" y2="310" stroke="#34d399" stroke-width="2" stroke-opacity="0.5"/>
+
+  <!-- Layer 2 to 3 -->
+  <line x1="400" y1="170" x2="540" y2="200" stroke="#a7f3d0" stroke-width="2.5" stroke-opacity="0.7"/>
+  <line x1="400" y1="240" x2="540" y2="200" stroke="#a7f3d0" stroke-width="2.5" stroke-opacity="0.7"/>
+  <line x1="400" y1="240" x2="540" y2="280" stroke="#a7f3d0" stroke-width="2.5" stroke-opacity="0.7"/>
+  <line x1="400" y1="310" x2="540" y2="280" stroke="#a7f3d0" stroke-width="2.5" stroke-opacity="0.7"/>
+
+  <!-- Nodes L1 -->
+  <circle cx="260" cy="140" r="16" fill="#047857" stroke="#6ee7b7" stroke-width="3"/>
+  <circle cx="260" cy="230" r="16" fill="#047857" stroke="#6ee7b7" stroke-width="3"/>
+  <circle cx="260" cy="320" r="16" fill="#047857" stroke="#6ee7b7" stroke-width="3"/>
+
+  <!-- Nodes L2 -->
+  <circle cx="400" cy="170" r="18" fill="#10b981" stroke="#a7f3d0" stroke-width="3"/>
+  <circle cx="400" cy="240" r="18" fill="#10b981" stroke="#a7f3d0" stroke-width="3"/>
+  <circle cx="400" cy="310" r="18" fill="#10b981" stroke="#a7f3d0" stroke-width="3"/>
+
+  <!-- Output Nodes -->
+  <circle cx="540" cy="200" r="20" fill="#34d399" stroke="#ffffff" stroke-width="4"/>
+  <circle cx="540" cy="280" r="20" fill="#34d399" stroke="#ffffff" stroke-width="4"/>
+
+  <!-- Data graph bar overlay on side -->
+  <rect x="620" y="270" width="16" height="50" rx="4" fill="#34d399" opacity="0.6"/>
+  <rect x="645" y="240" width="16" height="80" rx="4" fill="#34d399" opacity="0.8"/>
+  <rect x="670" y="200" width="16" height="120" rx="4" fill="#10b981"/>
+</svg>

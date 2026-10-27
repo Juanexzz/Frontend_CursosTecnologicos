@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg-elena" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4c1d95"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="58" fill="url(#bg-elena)" stroke="#c4b5fd" stroke-width="3"/>
+  <!-- Hair back -->
+  <path d="M30 46 C28 85, 92 85, 90 46 C90 20, 30 20, 30 46 Z" fill="#312e81"/>
+  <!-- Head -->
+  <circle cx="60" cy="48" r="21" fill="#fde68a"/>
+  <!-- Hair bangs -->
+  <path d="M39 42 C48 30, 72 30, 81 42 C74 38, 46 38, 39 42 Z" fill="#312e81"/>
+  <!-- Eyes & Smile -->
+  <circle cx="53" cy="46" r="2.5" fill="#1e1b4b"/>
+  <circle cx="67" cy="46" r="2.5" fill="#1e1b4b"/>
+  <path d="M53 57 Q60 63 67 57" fill="none" stroke="#b45309" stroke-width="2" stroke-linecap="round"/>
+  <!-- Shoulders & Blazer -->
+  <path d="M26 104 C28 78, 92 78, 94 104 Z" fill="#4338ca"/>
+  <path d="M50 78 L60 98 L70 78 Z" fill="#ede9fe"/>
+</svg>

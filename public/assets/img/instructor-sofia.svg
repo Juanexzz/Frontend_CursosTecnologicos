@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg-sofia" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#831843"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="58" fill="url(#bg-sofia)" stroke="#f472b6" stroke-width="3"/>
+  <!-- Dark Hair -->
+  <path d="M34 50 C32 90, 88 90, 86 50 C86 24, 34 24, 34 50 Z" fill="#18181b"/>
+  <!-- Head -->
+  <circle cx="60" cy="48" r="21" fill="#fed7aa"/>
+  <!-- Hair bangs -->
+  <path d="M40 38 C50 32, 70 32, 80 38 C75 34, 45 34, 40 38 Z" fill="#18181b"/>
+  <!-- Eyes & Smile -->
+  <circle cx="53" cy="46" r="2.5" fill="#09090b"/>
+  <circle cx="67" cy="46" r="2.5" fill="#09090b"/>
+  <path d="M53 58 Q60 63 67 58" fill="none" stroke="#be185d" stroke-width="2" stroke-linecap="round"/>
+  <!-- Torso & Cyberpunk Jacket -->
+  <path d="M26 104 C28 78, 92 78, 94 104 Z" fill="#09090b"/>
+  <path d="M50 80 L60 98 L70 80 Z" fill="#ec4899"/>
+</svg>

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg-cloud" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0c4a6e"/>
+      <stop offset="60%" stop-color="#075985"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#bg-cloud)"/>
+  <!-- Cloud graphic -->
+  <path d="M330 220 A60 60 0 0 1 470 200 A80 80 0 0 1 550 280 A60 60 0 0 1 510 340 L290 340 A60 60 0 0 1 250 260 A60 60 0 0 1 330 220 Z" fill="#ffffff" fill-opacity="0.1" stroke="#38bdf8" stroke-width="3"/>
+  <!-- Kubernetes helm wheel in center -->
+  <g transform="translate(400, 240)">
+    <circle cx="0" cy="0" r="45" fill="#0284c7" stroke="#ffffff" stroke-width="4"/>
+    <circle cx="0" cy="0" r="16" fill="#38bdf8"/>
+    <!-- Wheel spokes -->
+    <line x1="0" y1="-45" x2="0" y2="45" stroke="#ffffff" stroke-width="4"/>
+    <line x1="-39" y1="-22.5" x2="39" y2="22.5" stroke="#ffffff" stroke-width="4"/>
+    <line x1="-39" y1="22.5" x2="39" y2="-22.5" stroke="#ffffff" stroke-width="4"/>
+  </g>
+  <!-- Orbiting server nodes -->
+  <rect x="180" y="130" width="110" height="50" rx="8" fill="#0369a1" stroke="#7dd3fc" stroke-width="2"/>
+  <circle cx="205" cy="155" r="5" fill="#34d399"/>
+  <rect x="520" y="120" width="110" height="50" rx="8" fill="#0369a1" stroke="#7dd3fc" stroke-width="2"/>
+  <circle cx="545" cy="145" r="5" fill="#34d399"/>
+  <line x1="290" y1="165" x2="360" y2="210" stroke="#7dd3fc" stroke-width="2" stroke-dasharray="4 4"/>
+  <line x1="520" y1="165" x2="450" y2="210" stroke="#7dd3fc" stroke-width="2" stroke-dasharray="4 4"/>
+</svg>

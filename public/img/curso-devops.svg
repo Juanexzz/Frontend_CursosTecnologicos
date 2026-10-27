@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg-do" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="60%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#334155"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#bg-do)"/>
+  <!-- DevOps Infinity Loop -->
+  <path d="M280 230 C220 160 160 230 220 300 C280 370 340 300 400 230 C460 160 520 230 580 300 C640 370 700 230 640 160 C580 90 520 160 400 230 C340 300 280 230 280 230 Z" fill="none" stroke="#38bdf8" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Pipeline stages icons / dots -->
+  <circle cx="210" cy="200" r="14" fill="#0284c7" stroke="#ffffff" stroke-width="3"/>
+  <circle cx="210" cy="260" r="14" fill="#10b981" stroke="#ffffff" stroke-width="3"/>
+  <circle cx="400" cy="230" r="16" fill="#f59e0b" stroke="#ffffff" stroke-width="3"/>
+  <circle cx="590" cy="200" r="14" fill="#6366f1" stroke="#ffffff" stroke-width="3"/>
+  <circle cx="590" cy="260" r="14" fill="#ec4899" stroke="#ffffff" stroke-width="3"/>
+  <!-- Docker whale icon accent in background -->
+  <rect x="360" y="320" width="18" height="14" rx="2" fill="#38bdf8"/>
+  <rect x="382" y="320" width="18" height="14" rx="2" fill="#38bdf8"/>
+  <rect x="404" y="320" width="18" height="14" rx="2" fill="#38bdf8"/>
+  <rect x="426" y="320" width="18" height="14" rx="2" fill="#38bdf8"/>
+  <rect x="382" y="302" width="18" height="14" rx="2" fill="#38bdf8"/>
+  <rect x="404" y="302" width="18" height="14" rx="2" fill="#38bdf8"/>
+</svg>
