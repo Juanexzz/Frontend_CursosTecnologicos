@@ -1,0 +1,25 @@
+"use client";
+
+import React, { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import { RegisterForm } from "@/features/auth/components/RegisterForm";
+
+export default function RegisterPage() {
+  const router = useRouter();
+  const { isAuthenticated, isLoading } = useAuth();
+
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      router.push("/");
+    }
+  }, [isLoading, isAuthenticated, router]);
+
+  if (isLoading) return null;
+
+  return (
+    <div className="py-16 px-4 flex items-center justify-center min-h-[calc(100vh-160px)]">
+      <RegisterForm />
+    </div>
+  );
+}
