@@ -1,10 +1,11 @@
-export type UserRole = "admin" | "user";
+export type Role = "admin" | "user";
+export type UserRole = Role;
 
 export interface User {
   id: number;
   nombre: string;
   email: string;
-  role: UserRole;
+  role: Role;
   createdAt: string;
   updatedAt: string;
 }
@@ -22,5 +23,9 @@ export interface RegisterRequest {
 
 export interface AuthResponse {
   token: string;
+  user: User;
+}
+
+export interface RegisterResponse {
   user: User;
 }

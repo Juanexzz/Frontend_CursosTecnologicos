@@ -23,12 +23,18 @@ export interface CreateInscripcionRequest {
   motivacion: string;
 }
 
+export type InscripcionInput = CreateInscripcionRequest;
+
+export interface InscripcionesPagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
 export interface PaginatedInscripciones {
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-  };
+  pagination: InscripcionesPagination;
   data: Inscripcion[];
 }
+
+export type InscripcionesPage = PaginatedInscripciones;

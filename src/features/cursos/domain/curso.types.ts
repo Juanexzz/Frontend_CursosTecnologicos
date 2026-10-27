@@ -25,25 +25,32 @@ export interface Curso {
   updatedAt: string;
 }
 
-export interface CursoFilterParams {
+export interface CursoFilters {
   q?: string;
   categoria?: string;
   precioMin?: number;
   precioMax?: number;
   page?: number;
   limit?: number;
-  sort?: string;
 }
 
-export interface PaginatedCursos {
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-  };
+// Alias para compatibilidad con código existente
+export type CursoFilterParams = CursoFilters;
+
+export interface CursosPagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+export interface CursosPage {
+  pagination: CursosPagination;
   data: Curso[];
 }
+
+// Alias para compatibilidad
+export type PaginatedCursos = CursosPage;
 
 export type CreateCursoRequest = Omit<Curso, "id" | "createdAt" | "updatedAt">;
 export type UpdateCursoRequest = Partial<CreateCursoRequest>;
