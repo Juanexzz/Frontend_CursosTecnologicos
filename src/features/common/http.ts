@@ -5,24 +5,52 @@ export interface ApiFieldError {
   message: string;
 }
 
-export class HttpError extends Error {
+export class ApiError extends Error {
   readonly status: number;
   readonly errors?: ApiFieldError[];
 
   constructor(status: number, message: string, errors?: ApiFieldError[]) {
     super(message);
-    this.name = "HttpError";
+    this.name = "ApiError";
     this.status = status;
     this.errors = errors;
   }
 }
 
+// Compatibilidad hacia atrás si algún archivo usaba HttpError
+export { ApiError as HttpError };
+
+type TokenGetter = () => string | null;
+type UnauthorizedHandler = () => void;
+
+let registeredTokenGetter: TokenGetter = () => {
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem("nextech_token");
+};
+
+let registeredUnauthorizedHandler: UnauthorizedHandler = () => {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem("nextech_token");
+  localStorage.removeItem("nextech_user");
+  if (!window.location.pathname.startsWith("/login")) {
+    window.location.href = "/login";
+  }
+};
+
+export function setTokenGetter(getter: TokenGetter): void {
+  registeredTokenGetter = getter;
+}
+
+export function setUnauthorizedHandler(handler: UnauthorizedHandler): void {
+  registeredUnauthorizedHandler = handler;
+}
+
+// Helpers para almacenamiento seguro
 const TOKEN_KEY = "nextech_token";
 const USER_KEY = "nextech_user";
 
 export function getStoredToken(): string | null {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem(TOKEN_KEY);
+  return registeredTokenGetter();
 }
 
 export function setStoredAuth(token: string, user: unknown): void {
@@ -48,13 +76,15 @@ export function getStoredUser<T>(): T | null {
   }
 }
 
-interface RequestOptions extends RequestInit {
+export interface RequestOptions extends RequestInit {
   params?: Record<string, string | number | boolean | undefined>;
 }
 
 async function request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
   const url = new URL(
-    endpoint.startsWith("http") ? endpoint : `${API_BASE_URL}${endpoint.startsWith("/") ? "" : "/"}${endpoint}`
+    endpoint.startsWith("http")
+      ? endpoint
+      : `${API_BASE_URL}${endpoint.startsWith("/") ? "" : "/"}${endpoint}`
   );
 
   if (options.params) {
@@ -65,9 +95,10 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
     });
   }
 
-  const token = getStoredToken();
+  const token = registeredTokenGetter();
   const headers = new Headers(options.headers || {});
 
+  // Enviar JSON por defecto, dejando pasar FormData sin forzar Content-Type
   if (!headers.has("Content-Type") && !(options.body instanceof FormData)) {
     headers.set("Content-Type", "application/json");
   }
@@ -81,17 +112,12 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
     headers
   });
 
-  if (response.status === 401) {
-    clearStoredAuth();
-    if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
-      window.location.href = "/login";
-    }
-  }
-
+  // Manejo de respuestas 204 No Content
   if (response.status === 204) {
     return undefined as unknown as T;
   }
 
+  // Parsear cuerpo JSON si existe
   let data: unknown = null;
   const contentType = response.headers.get("content-type");
   if (contentType && contentType.includes("application/json")) {
@@ -102,10 +128,22 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
     }
   }
 
+  // Manejo de 401 Unauthorized: invoca manejador registrado excepto en login/registro
+  const isAuthEndpoint =
+    endpoint.includes("/auth/login") ||
+    endpoint.includes("/auth/register") ||
+    endpoint.includes("/auth/registro");
+
+  if (response.status === 401 && !isAuthEndpoint) {
+    registeredUnauthorizedHandler();
+  }
+
   if (!response.ok) {
     const errorBody = data as { message?: string; errors?: ApiFieldError[] } | null;
-    const message = errorBody?.message || `Error en la petición: ${response.status} ${response.statusText}`;
-    throw new HttpError(response.status, message, errorBody?.errors);
+    const message =
+      errorBody?.message ||
+      `Error en la petición: ${response.status} ${response.statusText}`;
+    throw new ApiError(response.status, message, errorBody?.errors);
   }
 
   return data as T;
