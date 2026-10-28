@@ -5,6 +5,8 @@ import Image from "next/image";
 import { Curso } from "../domain/curso.types";
 import { cursoService } from "../services/curso.service";
 import { AdminCourseModal } from "./AdminCourseModal";
+import { ConfirmDialog } from "../../common/components/ConfirmDialog";
+import { HttpError } from "../../common/http";
 
 interface AdminCourseTableProps {
   cursos: Curso[];
@@ -16,6 +18,7 @@ export function AdminCourseTable({ cursos, onRefresh }: AdminCourseTableProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [courseToDelete, setCourseToDelete] = useState<Curso | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const handleOpenCreate = () => {
     setCourseToEdit(null);
@@ -27,15 +30,26 @@ export function AdminCourseTable({ cursos, onRefresh }: AdminCourseTableProps) {
     setIsModalOpen(true);
   };
 
+  const handlePromptDelete = (curso: Curso) => {
+    setCourseToDelete(curso);
+    setDeleteError(null);
+  };
+
   const handleConfirmDelete = async () => {
     if (!courseToDelete) return;
     setIsDeleting(true);
+    setDeleteError(null);
     try {
       await cursoService.deleteCurso(courseToDelete.id);
       setCourseToDelete(null);
       onRefresh();
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Error al eliminar curso");
+      if (err instanceof HttpError) {
+        // Manejo específico del 409 (curso con inscripciones) según paso 5 de F4
+        setDeleteError(err.message);
+      } else {
+        setDeleteError("Ocurrió un error inesperado al eliminar el curso.");
+      }
     } finally {
       setIsDeleting(false);
     }
@@ -47,7 +61,7 @@ export function AdminCourseTable({ cursos, onRefresh }: AdminCourseTableProps) {
         <div>
           <h2 className="text-xl font-extrabold text-gray-900 dark:text-white">Gestión del Catálogo de Cursos</h2>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            Crea, actualiza y elimina especializaciones disponibles en la plataforma.
+            Crea, actualiza, sube imágenes y elimina especializaciones de la plataforma.
           </p>
         </div>
         <button
@@ -77,7 +91,7 @@ export function AdminCourseTable({ cursos, onRefresh }: AdminCourseTableProps) {
                 <td className="py-3 px-4 flex items-center gap-3">
                   <div className="relative w-10 h-7 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-900 flex-shrink-0">
                     <Image
-                      src={c.imagen.startsWith("/") ? c.imagen : `/${c.imagen}`}
+                      src={c.imagen.startsWith("/") || c.imagen.startsWith("http") ? c.imagen : `/${c.imagen}`}
                       alt={c.titulo}
                       fill
                       className="object-cover"
@@ -99,7 +113,7 @@ export function AdminCourseTable({ cursos, onRefresh }: AdminCourseTableProps) {
                   </button>
                   <button
                     type="button"
-                    onClick={() => setCourseToDelete(c)}
+                    onClick={() => handlePromptDelete(c)}
                     className="px-2.5 py-1 text-xs font-semibold rounded border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40"
                   >
                     Eliminar
@@ -111,7 +125,7 @@ export function AdminCourseTable({ cursos, onRefresh }: AdminCourseTableProps) {
         </table>
       </div>
 
-      {/* Modal para Crear/Editar */}
+      {/* Modal para Crear/Editar con subida de imagen */}
       <AdminCourseModal
         isOpen={isModalOpen}
         cursoToEdit={courseToEdit}
@@ -119,40 +133,22 @@ export function AdminCourseTable({ cursos, onRefresh }: AdminCourseTableProps) {
         onSaved={onRefresh}
       />
 
-      {/* Modal de Confirmación antes de Eliminar (+1 pto de bonificación) */}
-      {courseToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/70 backdrop-blur-sm">
-          <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-2xl border border-gray-200 dark:border-gray-700 space-y-4">
-            <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-950/60 text-red-600 flex items-center justify-center text-xl font-bold mx-auto">
-              ⚠️
-            </div>
-            <div className="text-center">
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white">¿Confirmas la eliminación?</h3>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                Estás a punto de eliminar permanentemente el curso <strong>&quot;{courseToDelete.titulo}&quot;</strong>. Esta acción no se puede deshacer.
-              </p>
-            </div>
-            <div className="flex gap-3 pt-2">
-              <button
-                type="button"
-                disabled={isDeleting}
-                onClick={() => setCourseToDelete(null)}
-                className="flex-1 py-2 rounded-xl border border-gray-300 dark:border-gray-700 text-xs font-semibold text-gray-700 dark:text-gray-300"
-              >
-                Cancelar
-              </button>
-              <button
-                type="button"
-                disabled={isDeleting}
-                onClick={handleConfirmDelete}
-                className="flex-1 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-semibold shadow-sm"
-              >
-                {isDeleting ? "Eliminando..." : "Sí, Eliminar Curso"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Diálogo de Confirmación antes de Eliminar (+1 pto de bonificación) */}
+      <ConfirmDialog
+        isOpen={Boolean(courseToDelete)}
+        title="¿Confirmas la eliminación del curso?"
+        message={`Estás a punto de eliminar permanentemente "${courseToDelete?.titulo}". Esta acción no se puede deshacer.`}
+        confirmText="Eliminar"
+        cancelText="Cancelar"
+        isDanger={true}
+        isLoading={isDeleting}
+        errorMessage={deleteError}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => {
+          setCourseToDelete(null);
+          setDeleteError(null);
+        }}
+      />
     </div>
   );
 }
