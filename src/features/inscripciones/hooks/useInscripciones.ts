@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Inscripcion, PaginatedInscripciones } from "../domain/inscripcion.types";
+import { Inscripcion } from "../domain/inscripcion.types";
 import { inscripcionService } from "../services/inscripcion.service";
 
-export function useMyInscripciones(page = 1, limit = 9) {
+export function useMisInscripciones(page = 1, limit = 9) {
   const [data, setData] = useState<Inscripcion[]>([]);
   const [pagination, setPagination] = useState({
     page: 1,
@@ -19,7 +19,7 @@ export function useMyInscripciones(page = 1, limit = 9) {
     setIsLoading(true);
     setError(null);
     try {
-      const response: PaginatedInscripciones = await inscripcionService.getMyInscripciones(page, limit);
+      const response = await inscripcionService.getMyInscripciones(page, limit);
       setData(response.data);
       setPagination(response.pagination);
     } catch (err) {
@@ -42,7 +42,7 @@ export function useMyInscripciones(page = 1, limit = 9) {
   };
 }
 
-export function useAllInscripciones(page = 1, limit = 9) {
+export function useInscripcionesAdmin(page = 1, limit = 9) {
   const [data, setData] = useState<Inscripcion[]>([]);
   const [pagination, setPagination] = useState({
     page: 1,
@@ -57,7 +57,7 @@ export function useAllInscripciones(page = 1, limit = 9) {
     setIsLoading(true);
     setError(null);
     try {
-      const response: PaginatedInscripciones = await inscripcionService.getAllInscripciones(page, limit);
+      const response = await inscripcionService.getAllInscripciones(page, limit);
       setData(response.data);
       setPagination(response.pagination);
     } catch (err) {
@@ -79,3 +79,7 @@ export function useAllInscripciones(page = 1, limit = 9) {
     refetch: fetchAll
   };
 }
+
+// Alias de retrocompatibilidad
+export const useMyInscripciones = useMisInscripciones;
+export const useAllInscripciones = useInscripcionesAdmin;
