@@ -8,17 +8,15 @@ export interface CursoDetailProps {
 }
 
 export const CursoDetail: React.FC<CursoDetailProps> = ({ curso }) => {
-  const imageSrc = curso.imagen.startsWith("http")
-    ? curso.imagen
-    : curso.imagen.startsWith("/")
-    ? curso.imagen
-    : `/assets/img/${curso.imagen}`;
+  const resolvePath = (path: string): string => {
+    if (!path) return "/assets/img/curso-fullstack.svg";
+    if (path.startsWith("http://") || path.startsWith("https://")) return path;
+    const clean = path.replace(/^\/+/, "");
+    return `/${clean}`;
+  };
 
-  const avatarSrc = curso.instructorAvatar.startsWith("http")
-    ? curso.instructorAvatar
-    : curso.instructorAvatar.startsWith("/")
-    ? curso.instructorAvatar
-    : `/assets/img/${curso.instructorAvatar}`;
+  const imageSrc = resolvePath(curso.imagen);
+  const avatarSrc = resolvePath(curso.instructorAvatar);
 
   return (
     <div className="space-y-12">

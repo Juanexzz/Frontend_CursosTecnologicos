@@ -95,7 +95,7 @@ export const CursoFilters: React.FC = () => {
     Boolean(searchParams.get("precioMax"));
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm mb-8 space-y-6">
+    <div className="bg-white dark:bg-gray-850 rounded-2xl border border-slate-200 dark:border-gray-800 p-6 shadow-sm mb-8 space-y-6">
       {/* Top search & filter toggle */}
       <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between">
         <div className="relative flex-1">
@@ -104,10 +104,10 @@ export const CursoFilters: React.FC = () => {
             placeholder="Buscar por título, tecnología, palabra clave..."
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            className="pl-10"
+            className="pl-10 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
           />
           <svg
-            className="absolute left-3 top-3 w-4 h-4 text-slate-400"
+            className="absolute left-3 top-3 w-4 h-4 text-slate-400 dark:text-gray-500"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -127,7 +127,7 @@ export const CursoFilters: React.FC = () => {
             variant="outline"
             size="md"
             onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
@@ -136,7 +136,7 @@ export const CursoFilters: React.FC = () => {
           </Button>
 
           {hasActiveFilters && (
-            <Button type="button" variant="ghost" size="md" onClick={resetAll}>
+            <Button type="button" variant="ghost" size="md" onClick={resetAll} className="dark:text-gray-300 dark:hover:bg-gray-800">
               Limpiar
             </Button>
           )}
@@ -144,7 +144,7 @@ export const CursoFilters: React.FC = () => {
       </div>
 
       {/* Categorías pill */}
-      <div className="flex flex-wrap gap-2 pt-2 border-t border-slate-100">
+      <div className="flex flex-wrap gap-2 pt-2 border-t border-slate-100 dark:border-gray-800">
         {CATEGORIES.map((cat) => {
           const isActive = categoria === cat.id;
           return (
@@ -154,8 +154,8 @@ export const CursoFilters: React.FC = () => {
               onClick={() => applyCategory(cat.id)}
               className={`px-4 py-2 rounded-full text-xs font-semibold transition-all ${
                 isActive
-                  ? "bg-primary text-white shadow-sm"
-                  : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                  ? "bg-blue-600 text-white shadow-sm"
+                  : "bg-slate-100 dark:bg-gray-800 text-slate-700 dark:text-gray-300 hover:bg-slate-200 dark:hover:bg-gray-750"
               }`}
             >
               {cat.label}
@@ -168,7 +168,7 @@ export const CursoFilters: React.FC = () => {
       {showFilters && (
         <form
           onSubmit={handlePriceSubmit}
-          className="pt-4 border-t border-slate-100 flex flex-wrap items-end gap-4"
+          className="pt-4 border-t border-slate-100 dark:border-gray-800 flex flex-wrap items-end gap-4"
         >
           <div className="w-36">
             <Input
@@ -178,6 +178,7 @@ export const CursoFilters: React.FC = () => {
               placeholder="0"
               value={precioMin}
               onChange={(e) => setPrecioMin(e.target.value)}
+              className="dark:bg-gray-800 dark:border-gray-700 dark:text-white"
             />
           </div>
           <div className="w-36">
@@ -188,9 +189,10 @@ export const CursoFilters: React.FC = () => {
               placeholder="200"
               value={precioMax}
               onChange={(e) => setPrecioMax(e.target.value)}
+              className="dark:bg-gray-800 dark:border-gray-700 dark:text-white"
             />
           </div>
-          <Button type="submit" size="md" variant="secondary">
+          <Button type="submit" size="md" variant="secondary" className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-750">
             Aplicar rango
           </Button>
         </form>

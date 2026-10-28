@@ -40,13 +40,13 @@ function CursosCatalogContent() {
     <div className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       {/* Encabezado */}
       <div className="text-center max-w-3xl mx-auto mb-10">
-        <span className="text-xs font-bold uppercase tracking-wider text-primary">
+        <span className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
           Formación Especializada
         </span>
-        <h1 className="text-3xl sm:text-4xl font-black text-slate-900 mt-2">
+        <h1 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-white mt-2">
           Catálogo Completo de Cursos Tecnológicos
         </h1>
-        <p className="text-slate-600 mt-2 text-sm sm:text-base">
+        <p className="text-gray-600 dark:text-gray-300 mt-2 text-sm sm:text-base">
           Programas intensivos orientados a la práctica con las tecnologías más
           demandadas de la industria. Filtra por categoría o busca por tecnología.
         </p>
@@ -56,7 +56,7 @@ function CursosCatalogContent() {
       <CursoFilters />
 
       {/* Barra de estado */}
-      <div className="flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 mb-6 gap-2">
+      <div className="flex flex-col sm:flex-row justify-between items-center text-xs text-gray-500 dark:text-gray-400 mb-6 gap-2">
         <span>
           {isLoading
             ? "Cargando cursos disponibles desde la API..."
