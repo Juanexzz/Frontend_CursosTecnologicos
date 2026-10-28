@@ -21,7 +21,7 @@ export const CursoCard: React.FC<CursoCardProps> = ({ curso, onOpenDetail }) => 
   const avatarSrc = resolvePath(curso.instructorAvatar);
 
   return (
-    <article className="group bg-white dark:bg-gray-850 rounded-2xl border border-slate-200 dark:border-gray-800 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col">
+    <article className="group bg-white dark:bg-gray-900 rounded-2xl border border-slate-200 dark:border-gray-700 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col">
       {/* Thumbnail */}
       <div className="relative w-full aspect-video bg-slate-900 overflow-hidden">
         <Image
