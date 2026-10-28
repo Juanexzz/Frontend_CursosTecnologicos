@@ -167,20 +167,32 @@ A continuación se muestra la evidencia de la petición HTTP protegida hacia la 
 
 ## Decisiones Técnicas
 
-*(Sección para redacción personal según las instrucciones del docente)*
-
 ### 1. Explica el flujo completo de un login: desde que envías el formulario hasta que una ruta protegida responde.
 
-_Escribe aquí tu respuesta con tus propias palabras..._
+1. **Envío de credenciales:** El usuario ingresa su correo y contraseña en `/login` y envía el formulario. El componente `LoginForm` valida los campos en el cliente y delega la llamada a `authService.login({ email, password })`.
+2. **Petición HTTP a la API:** El cliente `http.ts` realiza una petición `POST /api/auth/login` hacia el backend enviando las credenciales en formato JSON.
+3. **Autenticación en backend:** El backend valida el formato, busca el usuario por email en PostgreSQL mediante Prisma y verifica el hash de la contraseña usando `bcryptjs`. Si coincide, genera un JWT (con algoritmo HS256, expiración y payload mínimo: `id`, `email`, `role`).
+4. **Almacenamiento del token:** Al recibir la respuesta exitosa (200 OK con `{ token, user }`), el servicio ejecuta `tokenStorage.setToken(token)`. Esto guarda el JWT tanto en memoria de ejecución como en la cookie `token` para persistir la sesión.
+5. **Actualización de estado global:** El contexto `AuthProvider` actualiza el estado `user` e `isAuthenticated` a `true`, permitiendo que la barra de navegación muestre el nombre del usuario y el botón de salir.
+6. **Navegación y respuesta protegida:** El usuario navega a una ruta privada como `/mis-inscripciones`. El middleware en el servidor (`proxy.ts`) verifica la existencia de la cookie `token`. Al cargar el componente, el hook `useMisInscripciones` solicita `GET /api/inscripciones/mis-inscripciones`. El cliente centralizado `http.ts` intercepta la solicitud, extrae el token de `tokenStorage` y añade automáticamente la cabecera `Authorization: Bearer <token>`. El backend procesa el token en el middleware de autenticación y responde con los datos protegidos del usuario.
 
 ### 2. ¿Dónde guardas el token en el frontend y qué riesgo tiene esa decisión?
 
-_Escribe aquí tu respuesta con tus propias palabras..._
+En este proyecto, el token JWT se almacena de forma sincronizada en **memoria JavaScript** (para acceso inmediato y reactivo en las llamadas del cliente HTTP) y en una **cookie de navegador** (`token`, con flags `SameSite=Lax` y `Path=/`).
+
+- **Ventajas:** Permite que la sesión sobreviva al refrescar la página (F5) y que el middleware de Next.js (`proxy.ts` / Edge) pueda leer el token en el servidor antes de renderizar la página, evitando destellos de contenido no autorizado o redirecciones tardías en el cliente.
+- **Riesgo asociado:** Al ser accesible desde el cliente (no `HttpOnly`), si la aplicación llegara a sufrir una vulnerabilidad de Cross-Site Scripting (XSS) mediante la inyección de scripts maliciosos de terceros, un atacante podría leer la cookie o la memoria y exfiltrar el token. Se mitiga este riesgo utilizando React y Next.js (que escapan automáticamente los textos en el DOM) y validando rigurosamente todas las entradas de usuario.
 
 ### 3. ¿En qué caso tu API responde 401 y en cuál 403? Da un ejemplo real de tu proyecto.
 
-_Escribe aquí tu respuesta con tus propias palabras..._
+- **Código 401 Unauthorized (Falta o invalidez de autenticación):** Ocurre cuando el cliente no se ha identificado o la identidad provista no es válida.
+  - *Ejemplo real:* Cuando un usuario anónimo o con un token expirado/inválido intenta consultar sus inscripciones enviando `GET /api/inscripciones/mis-inscripciones` sin la cabecera `Authorization: Bearer <token>`. La API rechaza la petición con código 401 y el frontend redirige automáticamente al usuario a `/login`.
+- **Código 403 Forbidden (Falta de autorización o permisos insuficientes):** Ocurre cuando el usuario está debidamente autenticado (la API sabe quién es), pero su rol no tiene los privilegios necesarios para ejecutar la acción solicitada.
+  - *Ejemplo real:* Un usuario autenticado con rol `user` (estudiante) que envía una petición `DELETE /api/cursos/:id` para intentar eliminar un curso del catálogo. El token es legítimo (no da 401), pero el middleware de autorización valida que se requiere el rol `admin`, respondiendo con código 403 y denegando la operación.
 
 ### 4. Si usaste IA, ¿para qué la usaste y qué tuviste que corregir?
 
-_Escribe aquí tu respuesta con tus propias palabras..._
+Utilicé herramientas de IA principalmente como **asistente de diseño, verificación y pruebas de calidad**:
+- **Diseño y Maquetación:** Quería que la plataforma tuviera una estética moderna, limpia y profesional inspirada en referentes educativos como **Platzi** (tarjetas de cursos con badges de tecnologías, tonalidades oscuras y claras bien contrastadas, barras de filtros accesibles y dashboards interactivos). Como había conceptos y utilidades avanzadas de diseño en Tailwind CSS que desconocía o me tomaba mucho tiempo estructurar desde cero, utilicé la IA para estructurar los componentes visuales respetando la paleta de colores y la tipografía de la Entrega 1.
+- **Verificación y Pruebas Estructurales:** La utilicé para auditar que la arquitectura por features cumpliera estrictamente con el contrato de la API, validar que ninguna llamada `fetch` quedara por fuera de `common/http.ts`, comprobar que las paginaciones por URL funcionaran en sincronía con los filtros y verificar que no quedara ningún tipo `any` en TypeScript.
+- **Correcciones realizadas:** Tuve que corregir casos donde la IA proponía consumir estados locales quemados en lugar de sincronizarse con los endpoints de la API, ajustar rutas del middleware que redirigían en bucle en el servidor, corregir nombres de atributos en los formularios para que coincidieran exactamente con los esquemas de Prisma y el contrato (`CONTRATO_API.md`), y asegurar que los diálogos modales cumplieran las reglas de accesibilidad (manejo de foco y tecla Escape).
