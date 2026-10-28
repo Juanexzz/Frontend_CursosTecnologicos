@@ -8,5 +8,9 @@ export const authService = {
 
   register: async (userData: RegisterRequest): Promise<{ user: User }> => {
     return http.post<{ user: User }>("/auth/register", userData);
+  },
+
+  me: async (): Promise<{ user: User }> => {
+    return http.get<{ user: User }>("/auth/me");
   }
 };

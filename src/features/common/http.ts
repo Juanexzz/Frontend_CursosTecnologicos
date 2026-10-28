@@ -1,4 +1,5 @@
 import { API_BASE_URL } from "./config";
+import { getTokenCookie, removeTokenCookie } from "../auth/services/tokenStorage";
 
 export interface ApiFieldError {
   field: string;
@@ -24,16 +25,15 @@ type TokenGetter = () => string | null;
 type UnauthorizedHandler = () => void;
 
 let registeredTokenGetter: TokenGetter = () => {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem("nextech_token");
+  return getTokenCookie();
 };
 
 let registeredUnauthorizedHandler: UnauthorizedHandler = () => {
   if (typeof window === "undefined") return;
-  localStorage.removeItem("nextech_token");
-  localStorage.removeItem("nextech_user");
+  removeTokenCookie();
   if (!window.location.pathname.startsWith("/login")) {
-    window.location.href = "/login";
+    const current = window.location.pathname + window.location.search;
+    window.location.href = `/login?redirect=${encodeURIComponent(current)}`;
   }
 };
 
@@ -43,37 +43,6 @@ export function setTokenGetter(getter: TokenGetter): void {
 
 export function setUnauthorizedHandler(handler: UnauthorizedHandler): void {
   registeredUnauthorizedHandler = handler;
-}
-
-// Helpers para almacenamiento seguro
-const TOKEN_KEY = "nextech_token";
-const USER_KEY = "nextech_user";
-
-export function getStoredToken(): string | null {
-  return registeredTokenGetter();
-}
-
-export function setStoredAuth(token: string, user: unknown): void {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(TOKEN_KEY, token);
-  localStorage.setItem(USER_KEY, JSON.stringify(user));
-}
-
-export function clearStoredAuth(): void {
-  if (typeof window === "undefined") return;
-  localStorage.removeItem(TOKEN_KEY);
-  localStorage.removeItem(USER_KEY);
-}
-
-export function getStoredUser<T>(): T | null {
-  if (typeof window === "undefined") return null;
-  const raw = localStorage.getItem(USER_KEY);
-  if (!raw) return null;
-  try {
-    return JSON.parse(raw) as T;
-  } catch {
-    return null;
-  }
 }
 
 export interface RequestOptions extends RequestInit {
