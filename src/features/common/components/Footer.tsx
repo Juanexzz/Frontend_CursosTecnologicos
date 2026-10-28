@@ -104,6 +104,7 @@ export function Footer() {
               <input
                 type="email"
                 placeholder="tu@correo.com"
+                aria-label="Correo electrónico para boletín de noticias"
                 required
                 className="flex-1 px-3 py-2 text-xs rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               />

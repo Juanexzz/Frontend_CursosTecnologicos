@@ -5,7 +5,10 @@ import { Navbar } from "@/features/common/components/Navbar";
 import { Footer } from "@/features/common/components/Footer";
 
 export const metadata: Metadata = {
-  title: "NexTech Academy | Cursos de Tecnología e Innovación",
+  title: {
+    default: "NexTech Academy | Cursos de Tecnología e Innovación",
+    template: "%s | NexTech Academy"
+  },
   description:
     "NexTech Academy - Cursos tecnológicos especializados en Desarrollo Web, Cloud Computing, Inteligencia Artificial y Ciberseguridad impartidos por expertos.",
   icons: {
