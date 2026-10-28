@@ -15,7 +15,13 @@ export default function RegisterPage() {
     }
   }, [isLoading, isAuthenticated, router]);
 
-  if (isLoading) return null;
+  if (isLoading) {
+    return (
+      <div className="py-16 px-4 flex items-center justify-center min-h-[calc(100vh-160px)]">
+        <div className="w-full max-w-md h-96 bg-gray-100 dark:bg-gray-800 rounded-2xl animate-pulse" />
+      </div>
+    );
+  }
 
   return (
     <div className="py-16 px-4 flex items-center justify-center min-h-[calc(100vh-160px)]">

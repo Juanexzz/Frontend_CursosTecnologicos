@@ -8,12 +8,13 @@ import { useAuth } from "../../auth/hooks/useAuth";
 
 export function Navbar() {
   const pathname = usePathname();
-  const { user, isAuthenticated, isAdmin, logout } = useAuth();
+  const { user, isAuthenticated, isAdmin, isLoading, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
-    const isDark = document.documentElement.classList.contains("dark") ||
+    const isDark =
+      document.documentElement.classList.contains("dark") ||
       localStorage.getItem("nextech_theme") === "dark";
     setDarkMode(isDark);
     if (isDark) {
@@ -46,7 +47,10 @@ export function Navbar() {
     <header className="sticky top-0 z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
         {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-3 font-extrabold text-xl tracking-tight text-gray-900 dark:text-white">
+        <Link
+          href="/"
+          className="flex items-center gap-3 font-extrabold text-xl tracking-tight text-gray-900 dark:text-white"
+        >
           <Image
             src="/assets/img/logo.svg"
             alt="Logotipo NexTech"
@@ -90,7 +94,7 @@ export function Navbar() {
                   : "text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
               }`}
             >
-              Mis Inscripciones
+              Mis inscripciones
             </Link>
           )}
 
@@ -98,158 +102,171 @@ export function Navbar() {
             <Link
               href="/admin"
               className={`text-sm font-semibold px-3 py-1 rounded-full border border-purple-500/30 bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 transition-colors hover:bg-purple-100 dark:hover:bg-purple-900/40 ${
-                pathname.startsWith("/admin") ? "ring-2 ring-purple-500" : ""
+                pathname === "/admin" ? "ring-2 ring-purple-500" : ""
               }`}
             >
-              🛡️ Administración
+              Administración
             </Link>
           )}
         </nav>
 
-        {/* Actions & Session */}
-        <div className="flex items-center gap-4">
-          {/* Theme Toggle Button */}
+        {/* Actions Desktop */}
+        <div className="hidden md:flex items-center gap-4">
+          {/* Theme Toggle */}
           <button
             type="button"
             onClick={toggleTheme}
-            aria-label={darkMode ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
-            className="w-10 h-10 rounded-lg flex items-center justify-center bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+            aria-label="Cambiar tema de color"
+            className="p-2 rounded-lg text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
           >
             {darkMode ? (
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <circle cx="12" cy="12" r="5" strokeWidth="2" />
-                <line x1="12" y1="1" x2="12" y2="3" strokeWidth="2" strokeLinecap="round" />
-                <line x1="12" y1="21" x2="12" y2="23" strokeWidth="2" strokeLinecap="round" />
-                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" strokeWidth="2" strokeLinecap="round" />
-                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" strokeWidth="2" strokeLinecap="round" />
-                <line x1="1" y1="12" x2="3" y2="12" strokeWidth="2" strokeLinecap="round" />
-                <line x1="21" y1="12" x2="23" y2="12" strokeWidth="2" strokeLinecap="round" />
-                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" strokeWidth="2" strokeLinecap="round" />
-                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" strokeWidth="2" strokeLinecap="round" />
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fillRule="evenodd"
+                  d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+                  clipRule="evenodd"
+                />
               </svg>
             ) : (
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
               </svg>
             )}
           </button>
 
-          {/* Sesión: Invitado vs Usuario */}
-          {isAuthenticated && user ? (
-            <div className="hidden sm:flex items-center gap-3">
-              <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
-                Hola, <strong className="text-gray-900 dark:text-white">{user.nombre.split(" ")[0]}</strong>
+          {/* Estado de autenticación */}
+          {isLoading ? (
+            <div className="w-24 h-8 bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse" />
+          ) : isAuthenticated && user ? (
+            <div className="flex items-center gap-3">
+              <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">
+                {user.nombre}
               </span>
               <button
                 type="button"
                 onClick={logout}
-                className="text-xs font-semibold py-2 px-3 rounded-lg border border-gray-300 dark:border-gray-700 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40 dark:hover:text-red-400 transition-colors"
+                className="px-3.5 py-1.5 text-xs font-semibold rounded-lg border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors"
               >
                 Salir
               </button>
             </div>
           ) : (
-            <div className="hidden sm:flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <Link
                 href="/login"
-                className="text-xs font-semibold py-2 px-3.5 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                className="text-sm font-semibold text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               >
                 Ingresar
               </Link>
               <Link
                 href="/registro"
-                className="text-xs font-semibold py-2 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white shadow-sm transition-all"
+                className="px-4 py-2 text-xs font-bold rounded-lg bg-blue-600 hover:bg-blue-700 text-white shadow-sm transition-all"
               >
-                Registrarme
+                Registrarse
               </Link>
             </div>
           )}
+        </div>
 
-          {/* Botón Móvil */}
+        {/* Mobile Hamburger */}
+        <div className="flex items-center gap-2 md:hidden">
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label="Cambiar tema de color"
+            className="p-2 rounded-lg text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+          >
+            {darkMode ? "☀️" : "🌙"}
+          </button>
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden w-10 h-10 rounded-lg flex flex-col justify-center items-center gap-1.5 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
-            aria-label="Menú de navegación"
-            aria-expanded={mobileMenuOpen}
+            className="p-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+            aria-label="Abrir menú"
           >
-            <span className={`w-5 h-0.5 bg-gray-900 dark:bg-white transition-transform ${mobileMenuOpen ? "rotate-45 translate-y-2" : ""}`} />
-            <span className={`w-5 h-0.5 bg-gray-900 dark:bg-white transition-opacity ${mobileMenuOpen ? "opacity-0" : ""}`} />
-            <span className={`w-5 h-0.5 bg-gray-900 dark:bg-white transition-transform ${mobileMenuOpen ? "-rotate-45 -translate-y-2" : ""}`} />
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {mobileMenuOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
           </button>
         </div>
       </div>
 
-      {/* Mobile Drawer */}
+      {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-6 py-6 space-y-4">
-          <nav className="flex flex-col space-y-3">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className={`text-base font-semibold py-1.5 ${
-                  pathname === link.href ? "text-blue-600 dark:text-blue-400" : "text-gray-700 dark:text-gray-300"
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+        <div className="md:hidden border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 pt-2 pb-6 space-y-3">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={() => setMobileMenuOpen(false)}
+              className={`block py-2 text-base font-semibold ${
+                pathname === link.href
+                  ? "text-blue-600 dark:text-blue-400"
+                  : "text-gray-700 dark:text-gray-200"
+              }`}
+            >
+              {link.label}
+            </Link>
+          ))}
 
-            {isAuthenticated && (
-              <Link
-                href="/mis-inscripciones"
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-base font-semibold py-1.5 text-gray-700 dark:text-gray-300"
-              >
-                Mis Inscripciones
-              </Link>
-            )}
+          {isAuthenticated && (
+            <Link
+              href="/mis-inscripciones"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block py-2 text-base font-semibold text-gray-700 dark:text-gray-200"
+            >
+              Mis inscripciones
+            </Link>
+          )}
 
-            {isAdmin && (
-              <Link
-                href="/admin"
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-base font-semibold py-1.5 text-purple-600 dark:text-purple-400"
-              >
-                🛡️ Panel de Administración
-              </Link>
-            )}
-          </nav>
+          {isAdmin && (
+            <Link
+              href="/admin"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block py-2 text-base font-semibold text-purple-600 dark:text-purple-400"
+            >
+              Administración
+            </Link>
+          )}
 
-          <div className="pt-4 border-t border-gray-200 dark:border-gray-800 flex flex-col gap-3">
-            {isAuthenticated && user ? (
-              <>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Sesión iniciada como <strong>{user.nombre}</strong> ({user.email})
-                </p>
+          <div className="pt-4 border-t border-gray-200 dark:border-gray-800">
+            {isLoading ? (
+              <div className="h-10 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
+            ) : isAuthenticated && user ? (
+              <div className="space-y-3">
+                <div className="text-sm font-semibold text-gray-700 dark:text-gray-200">
+                  {user.nombre}
+                </div>
                 <button
                   type="button"
                   onClick={() => {
                     setMobileMenuOpen(false);
                     logout();
                   }}
-                  className="w-full py-2.5 px-4 text-center text-sm font-semibold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30 rounded-lg"
+                  className="w-full py-2.5 text-center text-sm font-semibold rounded-lg bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/50"
                 >
-                  Cerrar Sesión
+                  Salir
                 </button>
-              </>
+              </div>
             ) : (
-              <div className="flex gap-2">
+              <div className="grid grid-cols-2 gap-3">
                 <Link
                   href="/login"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex-1 py-2.5 text-center text-sm font-semibold rounded-lg border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200"
+                  className="py-2.5 text-center text-sm font-semibold rounded-lg border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200"
                 >
                   Ingresar
                 </Link>
                 <Link
                   href="/registro"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex-1 py-2.5 text-center text-sm font-semibold rounded-lg bg-blue-600 text-white"
+                  className="py-2.5 text-center text-sm font-semibold rounded-lg bg-blue-600 text-white"
                 >
-                  Registrarme
+                  Registrarse
                 </Link>
               </div>
             )}

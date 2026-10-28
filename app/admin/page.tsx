@@ -12,13 +12,13 @@ import { AdminInscripcionesTable } from "@/features/inscripciones/components/Adm
 
 export default function AdminDashboardPage() {
   const router = useRouter();
-  const { user, isAuthenticated, isAdmin, isLoading } = useAuth();
+  const { isAuthenticated, isAdmin, isLoading } = useAuth();
   const [activeTab, setActiveTab] = useState<"cursos" | "inscripciones">("cursos");
 
   const { cursos, isLoading: loadingCursos, refetch: refetchCursos } = useCursos({ limit: 50 });
-  const { inscripciones, isLoading: loadingInscripciones, refetch: refetchInscripciones } = useAllInscripciones(1, 50);
+  const { inscripciones, isLoading: loadingInscripciones } = useAllInscripciones(1, 50);
 
-  // Protección de ruta por rol
+  // Protección de ruta de cliente (experiencia de usuario)
   useEffect(() => {
     if (!isLoading) {
       if (!isAuthenticated) {
@@ -31,8 +31,10 @@ export default function AdminDashboardPage() {
 
   if (isLoading || !isAdmin) {
     return (
-      <div className="py-20 max-w-4xl mx-auto px-4 text-center">
-        <p className="text-gray-500 animate-pulse text-sm">Verificando permisos de administración...</p>
+      <div className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        <div className="h-8 w-64 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
+        <div className="h-4 w-96 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
+        <div className="h-64 bg-gray-100 dark:bg-gray-800 rounded-3xl animate-pulse" />
       </div>
     );
   }
@@ -48,62 +50,49 @@ export default function AdminDashboardPage() {
           <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white mt-1">
             Administración NexTech
           </h1>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            Bienvenido, <strong>{user?.nombre}</strong> (Rol Administrador).
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            Gestión integral de especializaciones académicas y postulaciones de alumnos.
           </p>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="flex p-1 bg-gray-100 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 text-xs font-bold">
+        {/* Pestañas para alternar */}
+        <div className="flex p-1 bg-gray-100 dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700">
           <button
             type="button"
             onClick={() => setActiveTab("cursos")}
-            className={`px-4 py-2 rounded-lg transition-all ${
+            className={`px-5 py-2 rounded-xl text-xs font-bold transition-all ${
               activeTab === "cursos"
-                ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm"
-                : "text-gray-500 hover:text-gray-900 dark:hover:text-white"
+                ? "bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm"
+                : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
             }`}
           >
-            📚 Cursos ({cursos.length})
+            Cursos ({cursos.length})
           </button>
           <button
             type="button"
             onClick={() => setActiveTab("inscripciones")}
-            className={`px-4 py-2 rounded-lg transition-all ${
+            className={`px-5 py-2 rounded-xl text-xs font-bold transition-all ${
               activeTab === "inscripciones"
-                ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm"
-                : "text-gray-500 hover:text-gray-900 dark:hover:text-white"
+                ? "bg-white dark:bg-gray-700 text-purple-600 dark:text-purple-400 shadow-sm"
+                : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
             }`}
           >
-            📝 Inscripciones ({inscripciones.length})
+            Inscripciones ({inscripciones.length})
           </button>
         </div>
       </div>
 
-      {/* Main Tab Content */}
+      {/* Contenido de la pestaña activa */}
       {activeTab === "cursos" ? (
         loadingCursos ? (
           <div className="h-64 bg-gray-100 dark:bg-gray-800 rounded-3xl animate-pulse" />
         ) : (
           <AdminCourseTable cursos={cursos} onRefresh={refetchCursos} />
         )
+      ) : loadingInscripciones ? (
+        <div className="h-64 bg-gray-100 dark:bg-gray-800 rounded-3xl animate-pulse" />
       ) : (
-        loadingInscripciones ? (
-          <div className="h-64 bg-gray-100 dark:bg-gray-800 rounded-3xl animate-pulse" />
-        ) : (
-          <div className="space-y-4">
-            <div className="flex justify-end">
-              <button
-                type="button"
-                onClick={() => refetchInscripciones()}
-                className="text-xs font-semibold px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"
-              >
-                ↻ Refrescar datos
-              </button>
-            </div>
-            <AdminInscripcionesTable inscripciones={inscripciones} />
-          </div>
-        )
+        <AdminInscripcionesTable inscripciones={inscripciones} />
       )}
     </div>
   );
