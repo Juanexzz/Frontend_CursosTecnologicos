@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "../../auth/hooks/useAuth";
 import { Curso } from "../../cursos/domain/curso.types";
 import { cursoService } from "../../cursos/services/curso.service";
-import { inscripcionService } from "../services/inscripcion.service";
+import { useCrearInscripcion } from "../hooks/useCrearInscripcion";
 import { HttpError } from "../../common/http";
 
 export function EnrollmentForm() {
@@ -14,6 +14,7 @@ export function EnrollmentForm() {
   const searchParams = useSearchParams();
   const preselectedCourse = searchParams.get("curso");
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
+  const { crearInscripcion, isLoading: isCreating } = useCrearInscripcion();
 
   const [cursos, setCursos] = useState<Curso[]>([]);
   const [loadingCursos, setLoadingCursos] = useState(true);
@@ -28,8 +29,6 @@ export function EnrollmentForm() {
 
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [generalError, setGeneralError] = useState<string | null>(null);
-  const [successData, setSuccessData] = useState<{ cursoTitulo: string } | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Cargar lista de cursos disponibles para el select
   useEffect(() => {
@@ -96,7 +95,6 @@ export function EnrollmentForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setGeneralError(null);
-    setSuccessData(null);
 
     if (!isAuthenticated) {
       router.push(`/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`);
@@ -105,28 +103,16 @@ export function EnrollmentForm() {
 
     if (!validate()) return;
 
-    setIsSubmitting(true);
     try {
-      await inscripcionService.create({
+      await crearInscripcion({
         cursoId: formData.cursoId,
         telefono: formData.telefono.trim(),
         nivel: formData.nivel,
         motivacion: formData.motivacion.trim()
       });
 
-      const cursoSeleccionado = cursos.find((c) => c.id === formData.cursoId);
-      setSuccessData({
-        cursoTitulo: cursoSeleccionado?.titulo || "el curso seleccionado"
-      });
-
-      setFormData({
-        cursoId: 0,
-        telefono: "",
-        nivel: "",
-        motivacion: "",
-        terminos: false
-      });
-      setFieldErrors({});
+      // Redirigir a /mis-inscripciones con estado de éxito según paso 3 de F4
+      router.push("/mis-inscripciones?created=true");
     } catch (err) {
       if (err instanceof HttpError) {
         if (err.errors && err.errors.length > 0) {
@@ -141,8 +127,6 @@ export function EnrollmentForm() {
       } else {
         setGeneralError("Ocurrió un error inesperado al procesar la inscripción.");
       }
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -150,6 +134,39 @@ export function EnrollmentForm() {
     return (
       <div className="p-8 text-center bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 animate-pulse">
         <p className="text-gray-500">Cargando formulario...</p>
+      </div>
+    );
+  }
+
+  // Si no hay sesión, se muestra el aviso y enlace a login en lugar del formulario
+  if (!isAuthenticated) {
+    return (
+      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-3xl p-8 shadow-xl text-center space-y-6">
+        <div className="w-16 h-16 bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center text-3xl mx-auto">
+          🔐
+        </div>
+        <div className="max-w-md mx-auto space-y-2">
+          <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white">
+            Inicia sesión para postularte
+          </h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Para registrar tu inscripción y vincularla a tu historial académico necesitas contar con una cuenta activa en NexTech Academy.
+          </p>
+        </div>
+        <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+          <Link
+            href={`/login?redirect=${encodeURIComponent(`/inscripcion${preselectedCourse ? `?curso=${preselectedCourse}` : ""}`)}`}
+            className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-md transition-all"
+          >
+            Iniciar Sesión
+          </Link>
+          <Link
+            href="/registro"
+            className="px-6 py-3 rounded-xl border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-bold text-sm transition-all"
+          >
+            Crear Cuenta Gratis
+          </Link>
+        </div>
       </div>
     );
   }
@@ -163,54 +180,19 @@ export function EnrollmentForm() {
         </p>
       </div>
 
-      {/* Aviso de usuario no autenticado */}
-      {!isAuthenticated && (
-        <div className="mb-6 p-4 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-300 text-sm flex items-center justify-between gap-4">
-          <div>
-            <strong>Se requiere iniciar sesión:</strong> Para postularte y guardar tu inscripción en la base de datos debes contar con una cuenta.
-          </div>
-          <Link
-            href={`/login?redirect=/inscripcion${preselectedCourse ? `?curso=${preselectedCourse}` : ""}`}
-            className="px-4 py-2 text-xs font-semibold rounded-lg bg-blue-600 hover:bg-blue-700 text-white whitespace-nowrap shadow-sm"
-          >
-            Iniciar Sesión
-          </Link>
-        </div>
-      )}
-
-      {/* Banner de Éxito */}
-      {successData && (
-        <div className="mb-6 p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300">
-          <div className="flex items-start gap-3">
-            <span className="text-2xl">🎉</span>
-            <div className="space-y-1">
-              <h4 className="font-bold text-base">¡Inscripción registrada con éxito!</h4>
-              <p className="text-sm">
-                Hemos recibido tu solicitud para <strong>{successData.cursoTitulo}</strong>. La inscripción quedó vinculada a tu cuenta.
-              </p>
-              <div className="pt-2">
-                <Link
-                  href="/mis-inscripciones"
-                  className="inline-block text-xs font-bold text-emerald-700 dark:text-emerald-300 hover:underline"
-                >
-                  Ver mis inscripciones →
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Error general */}
       {generalError && (
-        <div className="mb-6 p-4 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm">
+        <div
+          role="alert"
+          className="mb-6 p-4 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm"
+        >
           {generalError}
         </div>
       )}
 
       <form onSubmit={handleSubmit} noValidate className="space-y-5">
         {/* Datos de Usuario Autenticado */}
-        {isAuthenticated && user && (
+        {user && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-xl bg-gray-50 dark:bg-gray-750 border border-gray-100 dark:border-gray-700 text-xs">
             <div>
               <span className="text-gray-400 block uppercase font-bold">Aspirante:</span>
@@ -231,8 +213,11 @@ export function EnrollmentForm() {
             </label>
             <input
               id="telefono"
+              name="telefono"
               type="tel"
               value={formData.telefono}
+              aria-invalid={Boolean(fieldErrors.telefono)}
+              aria-describedby={fieldErrors.telefono ? "telefono-error" : undefined}
               onChange={(e) => {
                 setFormData({ ...formData, telefono: e.target.value });
                 if (fieldErrors.telefono) setFieldErrors({ ...fieldErrors, telefono: "" });
@@ -245,7 +230,7 @@ export function EnrollmentForm() {
               }`}
             />
             {fieldErrors.telefono && (
-              <p className="mt-1 text-xs font-medium text-red-600 dark:text-red-400">{fieldErrors.telefono}</p>
+              <p id="telefono-error" className="mt-1 text-xs font-medium text-red-600 dark:text-red-400">{fieldErrors.telefono}</p>
             )}
           </div>
 
@@ -255,8 +240,11 @@ export function EnrollmentForm() {
             </label>
             <select
               id="cursoSelect"
+              name="cursoId"
               value={formData.cursoId || ""}
               disabled={loadingCursos}
+              aria-invalid={Boolean(fieldErrors.cursoId)}
+              aria-describedby={fieldErrors.cursoId ? "curso-error" : undefined}
               onChange={(e) => {
                 setFormData({ ...formData, cursoId: Number(e.target.value) });
                 if (fieldErrors.cursoId) setFieldErrors({ ...fieldErrors, cursoId: "" });
@@ -277,7 +265,7 @@ export function EnrollmentForm() {
               ))}
             </select>
             {fieldErrors.cursoId && (
-              <p className="mt-1 text-xs font-medium text-red-600 dark:text-red-400">{fieldErrors.cursoId}</p>
+              <p id="curso-error" className="mt-1 text-xs font-medium text-red-600 dark:text-red-400">{fieldErrors.cursoId}</p>
             )}
           </div>
         </div>
@@ -289,7 +277,10 @@ export function EnrollmentForm() {
           </label>
           <select
             id="nivelExperiencia"
+            name="nivel"
             value={formData.nivel}
+            aria-invalid={Boolean(fieldErrors.nivel)}
+            aria-describedby={fieldErrors.nivel ? "nivel-error" : undefined}
             onChange={(e) => {
               setFormData({ ...formData, nivel: e.target.value });
               if (fieldErrors.nivel) setFieldErrors({ ...fieldErrors, nivel: "" });
@@ -306,7 +297,7 @@ export function EnrollmentForm() {
             <option value="avanzado">Avanzado (Trabajo en el sector TI y quiero ascender)</option>
           </select>
           {fieldErrors.nivel && (
-            <p className="mt-1 text-xs font-medium text-red-600 dark:text-red-400">{fieldErrors.nivel}</p>
+            <p id="nivel-error" className="mt-1 text-xs font-medium text-red-600 dark:text-red-400">{fieldErrors.nivel}</p>
           )}
         </div>
 
@@ -317,8 +308,11 @@ export function EnrollmentForm() {
           </label>
           <textarea
             id="motivacion"
+            name="motivacion"
             rows={4}
             value={formData.motivacion}
+            aria-invalid={Boolean(fieldErrors.motivacion)}
+            aria-describedby={fieldErrors.motivacion ? "motivacion-error" : undefined}
             onChange={(e) => {
               setFormData({ ...formData, motivacion: e.target.value });
               if (fieldErrors.motivacion) setFieldErrors({ ...fieldErrors, motivacion: "" });
@@ -331,7 +325,7 @@ export function EnrollmentForm() {
             }`}
           />
           {fieldErrors.motivacion && (
-            <p className="mt-1 text-xs font-medium text-red-600 dark:text-red-400">{fieldErrors.motivacion}</p>
+            <p id="motivacion-error" className="mt-1 text-xs font-medium text-red-600 dark:text-red-400">{fieldErrors.motivacion}</p>
           )}
         </div>
 
@@ -340,8 +334,11 @@ export function EnrollmentForm() {
           <div className="flex items-start gap-3">
             <input
               id="terminos"
+              name="terminos"
               type="checkbox"
               checked={formData.terminos}
+              aria-invalid={Boolean(fieldErrors.terminos)}
+              aria-describedby={fieldErrors.terminos ? "terminos-error" : undefined}
               onChange={(e) => {
                 setFormData({ ...formData, terminos: e.target.checked });
                 if (fieldErrors.terminos) setFieldErrors({ ...fieldErrors, terminos: "" });
@@ -353,16 +350,16 @@ export function EnrollmentForm() {
             </label>
           </div>
           {fieldErrors.terminos && (
-            <p className="mt-1 text-xs font-medium text-red-600 dark:text-red-400">{fieldErrors.terminos}</p>
+            <p id="terminos-error" className="mt-1 text-xs font-medium text-red-600 dark:text-red-400">{fieldErrors.terminos}</p>
           )}
         </div>
 
         <button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isCreating}
           className="w-full py-3.5 px-6 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isSubmitting ? "Enviando solicitud..." : "Enviar Solicitud de Inscripción"}
+          {isCreating ? "Enviando solicitud..." : "Enviar Solicitud de Inscripción"}
         </button>
       </form>
     </div>

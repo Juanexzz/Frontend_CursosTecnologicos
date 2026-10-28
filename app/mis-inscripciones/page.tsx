@@ -9,6 +9,7 @@ function MisInscripcionesContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const page = searchParams.get("page") ? Number(searchParams.get("page")) : 1;
+  const isCreated = searchParams.get("created") === "true";
   const { isAuthenticated, isLoading, user } = useAuth();
 
   useEffect(() => {
@@ -35,6 +36,19 @@ function MisInscripcionesContent() {
 
   return (
     <div className="py-12 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      {/* Banner de éxito tras crear inscripción */}
+      {isCreated && (
+        <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 flex items-center justify-between gap-4 animate-fadeIn">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">🎉</span>
+            <div>
+              <p className="font-bold text-sm">¡Inscripción registrada con éxito!</p>
+              <p className="text-xs">Tu postulación ha sido guardada en la base de datos y vinculada a tu cuenta.</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div>
         <span className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
           Mi Portal Académico
