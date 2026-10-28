@@ -35,10 +35,13 @@ export function RegisterForm() {
       errors.email = "Ingresa un formato de correo electrónico válido.";
     }
 
+    // Regla de F3: contraseña mínimo 8 caracteres con letras y números
     if (!formData.password) {
       errors.password = "La contraseña es obligatoria.";
-    } else if (formData.password.length < 6) {
-      errors.password = "La contraseña debe contener al menos 6 caracteres.";
+    } else if (formData.password.length < 8) {
+      errors.password = "La contraseña debe contener al menos 8 caracteres.";
+    } else if (!/[A-Za-z]/.test(formData.password) || !/[0-9]/.test(formData.password)) {
+      errors.password = "La contraseña debe contener al menos una letra y un número.";
     }
 
     if (formData.password !== formData.confirmPassword) {
@@ -92,7 +95,10 @@ export function RegisterForm() {
       </div>
 
       {generalError && (
-        <div className="mb-6 p-4 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm rounded-lg">
+        <div
+          role="alert"
+          className="mb-6 p-4 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm rounded-lg"
+        >
           {generalError}
         </div>
       )}
@@ -104,22 +110,27 @@ export function RegisterForm() {
           </label>
           <input
             id="nombre"
+            name="nombre"
             type="text"
             autoComplete="name"
             value={formData.nombre}
+            aria-invalid={Boolean(fieldErrors.nombre)}
+            aria-describedby={fieldErrors.nombre ? "nombre-error" : undefined}
             onChange={(e) => {
               setFormData({ ...formData, nombre: e.target.value });
               if (fieldErrors.nombre) setFieldErrors({ ...fieldErrors, nombre: "" });
             }}
-            placeholder="Ej. Juan Esteban Vallejo"
+            placeholder="Ej. Juan Pérez"
             className={`w-full px-4 py-3 rounded-lg border text-sm transition-colors bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 ${
               fieldErrors.nombre
                 ? "border-red-500 focus:ring-red-200 dark:focus:ring-red-900"
-                : "border-gray-200 dark:border-gray-600 focus:border-blue-600 focus:ring-blue-100 dark:focus:ring-blue-900"
+                : "border-gray-200 dark:border-gray-600 focus:ring-blue-100 dark:focus:ring-blue-900 focus:border-blue-500"
             }`}
           />
           {fieldErrors.nombre && (
-            <p className="mt-1 text-xs font-medium text-red-600 dark:text-red-400">{fieldErrors.nombre}</p>
+            <p id="nombre-error" className="mt-1 text-xs text-red-500 dark:text-red-400">
+              {fieldErrors.nombre}
+            </p>
           )}
         </div>
 
@@ -129,9 +140,12 @@ export function RegisterForm() {
           </label>
           <input
             id="email"
+            name="email"
             type="email"
             autoComplete="email"
             value={formData.email}
+            aria-invalid={Boolean(fieldErrors.email)}
+            aria-describedby={fieldErrors.email ? "email-error" : undefined}
             onChange={(e) => {
               setFormData({ ...formData, email: e.target.value });
               if (fieldErrors.email) setFieldErrors({ ...fieldErrors, email: "" });
@@ -140,36 +154,43 @@ export function RegisterForm() {
             className={`w-full px-4 py-3 rounded-lg border text-sm transition-colors bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 ${
               fieldErrors.email
                 ? "border-red-500 focus:ring-red-200 dark:focus:ring-red-900"
-                : "border-gray-200 dark:border-gray-600 focus:border-blue-600 focus:ring-blue-100 dark:focus:ring-blue-900"
+                : "border-gray-200 dark:border-gray-600 focus:ring-blue-100 dark:focus:ring-blue-900 focus:border-blue-500"
             }`}
           />
           {fieldErrors.email && (
-            <p className="mt-1 text-xs font-medium text-red-600 dark:text-red-400">{fieldErrors.email}</p>
+            <p id="email-error" className="mt-1 text-xs text-red-500 dark:text-red-400">
+              {fieldErrors.email}
+            </p>
           )}
         </div>
 
         <div>
           <label htmlFor="password" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
-            Contraseña <span className="text-red-500">*</span>
+            Contraseña (mínimo 8 caracteres, letras y números) <span className="text-red-500">*</span>
           </label>
           <input
             id="password"
+            name="password"
             type="password"
             autoComplete="new-password"
             value={formData.password}
+            aria-invalid={Boolean(fieldErrors.password)}
+            aria-describedby={fieldErrors.password ? "password-error" : undefined}
             onChange={(e) => {
               setFormData({ ...formData, password: e.target.value });
               if (fieldErrors.password) setFieldErrors({ ...fieldErrors, password: "" });
             }}
-            placeholder="Mínimo 6 caracteres"
+            placeholder="••••••••"
             className={`w-full px-4 py-3 rounded-lg border text-sm transition-colors bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 ${
               fieldErrors.password
                 ? "border-red-500 focus:ring-red-200 dark:focus:ring-red-900"
-                : "border-gray-200 dark:border-gray-600 focus:border-blue-600 focus:ring-blue-100 dark:focus:ring-blue-900"
+                : "border-gray-200 dark:border-gray-600 focus:ring-blue-100 dark:focus:ring-blue-900 focus:border-blue-500"
             }`}
           />
           {fieldErrors.password && (
-            <p className="mt-1 text-xs font-medium text-red-600 dark:text-red-400">{fieldErrors.password}</p>
+            <p id="password-error" className="mt-1 text-xs text-red-500 dark:text-red-400">
+              {fieldErrors.password}
+            </p>
           )}
         </div>
 
@@ -179,38 +200,43 @@ export function RegisterForm() {
           </label>
           <input
             id="confirmPassword"
+            name="confirmPassword"
             type="password"
             autoComplete="new-password"
             value={formData.confirmPassword}
+            aria-invalid={Boolean(fieldErrors.confirmPassword)}
+            aria-describedby={fieldErrors.confirmPassword ? "confirmPassword-error" : undefined}
             onChange={(e) => {
               setFormData({ ...formData, confirmPassword: e.target.value });
               if (fieldErrors.confirmPassword) setFieldErrors({ ...fieldErrors, confirmPassword: "" });
             }}
-            placeholder="Repite tu contraseña"
+            placeholder="••••••••"
             className={`w-full px-4 py-3 rounded-lg border text-sm transition-colors bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 ${
               fieldErrors.confirmPassword
                 ? "border-red-500 focus:ring-red-200 dark:focus:ring-red-900"
-                : "border-gray-200 dark:border-gray-600 focus:border-blue-600 focus:ring-blue-100 dark:focus:ring-blue-900"
+                : "border-gray-200 dark:border-gray-600 focus:ring-blue-100 dark:focus:ring-blue-900 focus:border-blue-500"
             }`}
           />
           {fieldErrors.confirmPassword && (
-            <p className="mt-1 text-xs font-medium text-red-600 dark:text-red-400">{fieldErrors.confirmPassword}</p>
+            <p id="confirmPassword-error" className="mt-1 text-xs text-red-500 dark:text-red-400">
+              {fieldErrors.confirmPassword}
+            </p>
           )}
         </div>
 
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm mt-2"
+          className="w-full mt-2 py-3.5 px-4 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-bold rounded-lg text-sm shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           {isSubmitting ? "Creando cuenta..." : "Registrarme"}
         </button>
       </form>
 
-      <div className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
+      <div className="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
         ¿Ya tienes una cuenta?{" "}
         <Link href="/login" className="text-blue-600 dark:text-blue-400 font-semibold hover:underline">
-          Inicia sesión aquí
+          Inicia sesión
         </Link>
       </div>
     </div>
