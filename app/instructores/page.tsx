@@ -18,8 +18,8 @@ const INSTRUCTORES = [
     alumnos: "+3,400",
     experiencia: "12 años exp.",
     cursos: [
-      { titulo: "Arquitectura Cloud con AWS y Kubernetes", href: "/cursos" },
-      { titulo: "Automatización DevOps: CI/CD con GitHub Actions", href: "/cursos" }
+      { titulo: "Arquitectura Cloud con AWS y Kubernetes", href: "/cursos/2" },
+      { titulo: "Automatización DevOps: CI/CD con GitHub Actions", href: "/cursos/7" }
     ]
   },
   {
@@ -32,8 +32,8 @@ const INSTRUCTORES = [
     alumnos: "+4,100",
     experiencia: "10 años exp.",
     cursos: [
-      { titulo: "Machine Learning y Ciencia de Datos con Python", href: "/cursos" },
-      { titulo: "Deep Learning y Modelos Generativos (LLMs)", href: "/cursos" }
+      { titulo: "Machine Learning y Ciencia de Datos con Python", href: "/cursos/3" },
+      { titulo: "Deep Learning y Modelos Generativos (LLMs)", href: "/cursos/6" }
     ]
   },
   {
@@ -46,8 +46,8 @@ const INSTRUCTORES = [
     alumnos: "+2,800",
     experiencia: "8 años exp.",
     cursos: [
-      { titulo: "Desarrollo Full Stack Moderno con Node.js & TS", href: "/cursos" },
-      { titulo: "Fundamentos de Desarrollo Frontend HTML5 & CSS3", href: "/cursos" }
+      { titulo: "Desarrollo Full Stack Moderno con Node.js & TS", href: "/cursos/1" },
+      { titulo: "Fundamentos de Desarrollo Frontend HTML5 & CSS3", href: "/cursos/5" }
     ]
   },
   {
@@ -60,8 +60,8 @@ const INSTRUCTORES = [
     alumnos: "+3,100",
     experiencia: "9 años exp.",
     cursos: [
-      { titulo: "Ciberseguridad Defensiva y Hacking Ético", href: "/cursos" },
-      { titulo: "Auditoría de Seguridad y Gestión de Vulnerabilidades", href: "/cursos" }
+      { titulo: "Ciberseguridad Defensiva y Hacking Ético", href: "/cursos/4" },
+      { titulo: "Auditoría de Seguridad y Gestión de Vulnerabilidades", href: "/cursos/8" }
     ]
   }
 ];
